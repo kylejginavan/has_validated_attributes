@@ -1,0 +1,13 @@
+*.gem
+.bundle
+.rvmrc
+Gemfile.lock
+pkg/*
+log/*.log
+*.tmproj
+tmp
+log
+.gitconfig
+bin/*
+.rbenv-version
+.rbenv-gemsets

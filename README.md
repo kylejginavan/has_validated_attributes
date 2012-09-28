@@ -1,4 +1,4 @@
-has_validated_fields
+has_validated_attributes
 ====================
 
-HasValidatedFields
+HasValidatedAttributes

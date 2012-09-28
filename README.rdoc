@@ -1,0 +1,58 @@
+== HasValidatedAttributes {<img src="https://secure.travis-ci.org/kylejginavan/has_validated_attributes.png"/>}[http://travis-ci.org/kylejginavan/has_validated_attributes]
+
+== DESCRIPTION
+
+has_validated_attributes is a Ruby on Rails gem that lets you validate your fields .
+
+== INSTALLATION & SETUP:
+
+add in your Gemfile:
+
+  gem 'has_validated_attributes'
+
+in your model:
+
+  has_validated_attributes :field => :normalized_type
+
+for example:
+
+  class CoolStuff < ActiveRecord::Base
+    has_validated_attributes :username_attr => :username, 
+                           :name_attr => :name, :email_attr => :email,
+                           :phone_number_attr => :phone_number, :domain_attr => :domain,
+                           :phone_extension_attr => :phone_extension, :zipcode_attr => :zipcode,
+                           :middle_initial_attr => :middle_initial, :dollar_attr => :dollar,
+                           :positive_dollar_attr => :positive_dollar, :percent_attr => :percent,
+                           :positive_percent_attr => :positive_percent, :url_attr => :url, :ssn_attr => :ssn,
+                           :taxid_attr => :taxid, :age_attr => :age, :number_attr => :number
+  end  
+
+== Validations availables
+  :username, :phone_number, :phone_extension, :name, :email,
+  :zipcode, :dollar, :percent, :positive_percent, :middle_initial, :url,
+  :positive_dollar, :domain, :ssn, :taxid, :age, :number
+
+
+== COPYRIGHT
+
+Copyright (c) 2011 Kyle Ginavan
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+See LICENSE for details.
