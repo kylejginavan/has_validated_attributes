@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
-  has_validated_attributes :username_attr => :username, :name_attr => :name, :email_attr => :email,
-                           :phone_number_attr => :phone_number, :domain_attr => :domain,
-                           :phone_extension_attr => :phone_extension, :zipcode_attr => :zipcode,
-                           :middle_initial_attr => :middle_initial, :dollar_attr => :dollar,
-                           :positive_dollar_attr => :positive_dollar, :percent_attr => :percent,
-                           :positive_percent_attr => :positive_percent, :url_attr => :url, :ssn_attr => :ssn,
-                           :taxid_attr => :taxid, :age_attr => :age, :number_attr => :number
+  has_validated_attributes :username_attr => {:format => :username}, :name_attr => {:format => :name}, :email_attr => {:format => :email},
+                           :phone_number_attr => {:format => :phone_number}, :domain_attr => {:format => :domain},
+                           :phone_extension_attr => {:format => :phone_extension}, :zipcode_attr => {:format => :zipcode},
+                           :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
+                           :positive_dollar_attr => {:format => :positive_dollar}, :percent_attr => {:format => :percent},
+                           :positive_percent_attr => {:format => :positive_percent}, :url_attr => {:format => :url}, :ssn_attr => {:format => :ssn},
+                           :taxid_attr => {:format => :taxid}, :age_attr => {:format => :age}, :number_attr => {:format => :number}
 end
 
 describe "HasValidatedAttributes" do
@@ -16,7 +16,7 @@ describe "HasValidatedAttributes" do
       :phone_number_attr => "1111111111", :phone_extension_attr => "111111", :domain_attr => "www.test.com", :zipcode_attr => "11111",
       :middle_initial_attr => "A", :dollar_attr => "-11", :positive_dollar_attr => "1", :percent_attr => "12",
       :positive_percent_attr => "99", :url_attr => "http://www.google.com", :ssn_attr => "111111111", :taxid_attr => "111111111",
-      :number_attr => "1")
+      :number_attr => "1", :age_attr => 28)
   end
 
   describe "#username" do    
@@ -39,7 +39,6 @@ describe "HasValidatedAttributes" do
       @resource.valid?.should be_false
       @resource.errors.full_messages.should == ["Username attr is too long (maximum is 127 characters)"]
     end
-
 
     it "should return ok" do
       ["kansascity", "kansascity@org1", "kansas.city@org1", "kansas_city@org1", "kansas-city", "1kc.-_@"].each do |value|
@@ -341,6 +340,4 @@ describe "HasValidatedAttributes" do
       end
     end
   end
-
-
 end

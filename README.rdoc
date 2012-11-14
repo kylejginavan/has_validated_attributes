@@ -18,7 +18,7 @@ for example:
 
   class CoolStuff < ActiveRecord::Base
     has_validated_attributes :username_attr => :username, 
-                           :name_attr => :name, :email_attr => :email,
+                           :name_attr => :person_name, :email_attr => :email,
                            :phone_number_attr => :phone_number, :domain_attr => :domain,
                            :phone_extension_attr => :phone_extension, :zipcode_attr => :zipcode,
                            :middle_initial_attr => :middle_initial, :dollar_attr => :dollar,
@@ -28,7 +28,7 @@ for example:
   end  
 
 == Validations availables
-  :username, :phone_number, :phone_extension, :name, :email,
+  :username, :phone_number, :phone_extension, :person_name, :email,
   :zipcode, :dollar, :percent, :positive_percent, :middle_initial, :url,
   :positive_dollar, :domain, :ssn, :taxid, :age, :number
 
