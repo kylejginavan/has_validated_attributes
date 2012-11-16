@@ -32,7 +32,7 @@ module HasValidatedAttributes
 
         args.each do |field, options|
           type = options.delete(:format)
-          validates field.to_sym, HasValidatedAttributes.send("#{type}_format".to_sym).merge!(options)
+          validates field.to_sym, HasValidatedAttributes.send("#{type}_format".to_sym).merge(options)
         end
       end
     end

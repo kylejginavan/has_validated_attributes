@@ -28,7 +28,7 @@ for example:
 
 == Extra Options
   You can pass extra options like
-  {:username_attr => {:format => :username, :allow_nil => true, :allow_blank => true, :message => "some message"}
+  {:username_attr => {:format => :username, :allow_nil => true, :allow_blank => true, :message => "some message", :if => :food?}
 
 
 == Validations availables

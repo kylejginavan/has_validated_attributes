@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
-  has_validated_attributes :username_attr => {:format => :username}, :name_attr => {:format => :name}, :email_attr => {:format => :email},
+  has_validated_attributes :username_attr => {:format => :username, :if => :username_attr?}, :name_attr => {:format => :name}, :email_attr => {:format => :email},
                            :phone_number_attr => {:format => :phone_number}, :domain_attr => {:format => :domain},
                            :phone_extension_attr => {:format => :phone_extension}, :zipcode_attr => {:format => :zipcode},
                            :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
@@ -41,7 +41,7 @@ describe "HasValidatedAttributes" do
     end
 
     it "should return ok" do
-      ["kansascity", "kansascity@org1", "kansas.city@org1", "kansas_city@org1", "kansas-city", "1kc.-_@"].each do |value|
+      ["kansascity", "kansascity@org1", "kansas.city@org1", "kansas_city@org1", "kansas-city", "1kc.-_@", nil].each do |value|
         @resource.username_attr = value 
         @resource.valid?.should be_true
       end
