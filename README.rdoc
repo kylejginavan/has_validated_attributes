@@ -17,15 +17,19 @@ in your model:
 for example:
 
   class CoolStuff < ActiveRecord::Base
-    has_validated_attributes :username_attr => :username, 
-                           :name_attr => :person_name, :email_attr => :email,
-                           :phone_number_attr => :phone_number, :domain_attr => :domain,
-                           :phone_extension_attr => :phone_extension, :zipcode_attr => :zipcode,
-                           :middle_initial_attr => :middle_initial, :dollar_attr => :dollar,
-                           :positive_dollar_attr => :positive_dollar, :percent_attr => :percent,
-                           :positive_percent_attr => :positive_percent, :url_attr => :url, :ssn_attr => :ssn,
-                           :taxid_attr => :taxid, :age_attr => :age, :number_attr => :number
+    has_validated_attributes :username_attr => {:format => :username}, :name_attr => {:format => :name}, :email_attr => {:format => :email},
+                               :phone_number_attr => {:format => :phone_number}, :domain_attr => {:format => :domain},
+                               :phone_extension_attr => {:format => :phone_extension}, :zipcode_attr => {:format => :zipcode},
+                               :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
+                               :positive_dollar_attr => {:format => :positive_dollar}, :percent_attr => {:format => :percent},
+                               :positive_percent_attr => {:format => :positive_percent}, :url_attr => {:format => :url}, :ssn_attr => {:format => :ssn},
+                               :taxid_attr => {:format => :taxid}, :age_attr => {:format => :age}, :number_attr => {:format => :number}
   end  
+
+== Extra Options
+  You can pass extra options like
+  {:username_attr => {:format => :username, :allow_nil => true, :allow_blank => true, :message => "some message"}
+
 
 == Validations availables
   :username, :phone_number, :phone_extension, :person_name, :email,
