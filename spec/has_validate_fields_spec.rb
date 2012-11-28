@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
-  has_validated_attributes :username_attr => {:format => :username, :if => :username_attr?}, :name_attr => {:format => :name}, :email_attr => {:format => :email},
-                           :phone_number_attr => {:format => :phone_number}, :domain_attr => {:format => :domain},
-                           :phone_extension_attr => {:format => :phone_extension}, :zipcode_attr => {:format => :zipcode},
+  has_validated_attributes :name_attr => {:format => :name}, :username_attr => {:format => :username}, :email_attr => {:format => :email},
+                           :phone_number_attr => {:format => :phone_number}, :phone_extension_attr => {:format => :phone_extension},
+                           :domain_attr => {:format => :domain}, :zipcode_attr => {:format => :zipcode},
                            :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
                            :positive_dollar_attr => {:format => :positive_dollar}, :percent_attr => {:format => :percent},
-                           :positive_percent_attr => {:format => :positive_percent}, :url_attr => {:format => :url}, :ssn_attr => {:format => :ssn},
+                           :positive_percent_attr => {:format => :positive_percent}, :url_attr => {:format => :url}, :ssn_attr => {:format => :social_security_number},
                            :taxid_attr => {:format => :taxid}, :age_attr => {:format => :age}, :number_attr => {:format => :number}
 end
 
@@ -41,7 +41,7 @@ describe "HasValidatedAttributes" do
     end
 
     it "should return ok" do
-      ["kansascity", "kansascity@org1", "kansas.city@org1", "kansas_city@org1", "kansas-city", "1kc.-_@", nil].each do |value|
+      ["kansascity", "kansascity@org1", "kansas.city@org1", "kansas_city@org1", "kansas-city", "1kc.-_@"].each do |value|
         @resource.username_attr = value 
         @resource.valid?.should be_true
       end
@@ -58,13 +58,12 @@ describe "HasValidatedAttributes" do
     end
 
     it "should return ok" do
-      ["k c", "- H-", " t", "& u", "21 ", "brok"].each do |value|
+      ["k c", "- H-", " t", "& u", "21 ", "brok", nil].each do |value|
         @resource.name_attr = value 
         @resource.valid?.should be_true
       end
     end
   end
-
 
   describe "#email" do
     it "should return error" do
@@ -185,7 +184,7 @@ describe "HasValidatedAttributes" do
 
   describe "#dollar" do
     it "should return error" do
-      ["0.2222", "ewqr"].each do |value|
+      ["0.2222"].each do |value|
         @resource.dollar_attr = value 
         @resource.valid?.should be_false
         @resource.errors.full_messages.should == ["Dollar attr accepts only numeric characters, period, and negative sign"]
@@ -203,15 +202,15 @@ describe "HasValidatedAttributes" do
 
   describe "#positive dollar" do
     it "should return error" do
-      ["0.2222", "ewqr", "-1"].each do |value|
+      ["-0.2", "-1"].each do |value|
         @resource.positive_dollar_attr = value 
         @resource.valid?.should be_false
-        @resource.errors.full_messages.should == ["Positive dollar attr accepts only numeric characters, period"]
+        @resource.errors.full_messages.should == ["Positive dollar attr accepts only numeric characters, period", "Positive dollar attr must be greater than 0"]
       end
     end
 
     it "should return ok" do
-      ["0", "1", "100", "1000", "1000.99"].each do |value|
+      ["1", "100", "1000", "1000.99"].each do |value|
         @resource.positive_dollar_attr = value 
         @resource.valid?.should be_true
       end
@@ -238,10 +237,10 @@ describe "HasValidatedAttributes" do
 
   describe "#positive_percent" do
     it "should return error" do
-      ["ewqr", "&", "-100"].each do |value|
+      ["-100"].each do |value|
         @resource.positive_percent_attr = value 
         @resource.valid?.should be_false
-        @resource.errors.full_messages.should == ["Positive percent attr accepts only numeric characters, period, and must be less than 100"]
+        @resource.errors.full_messages.should == ["Positive percent attr accepts only numeric characters, period, and must be less than 100", "Positive percent attr must be greater than or equal to 0"]
       end
     end
 
