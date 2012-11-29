@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
-  has_validated_attributes :name_attr => {:format => :name}, :username_attr => {:format => :username}, :email_attr => {:format => :email},
+  has_validated_attributes :name_attr => {:format => :name, :length_maximum => 10}, :username_attr => {:format => :username}, :email_attr => {:format => :email},
                            :phone_number_attr => {:format => :phone_number}, :phone_extension_attr => {:format => :phone_extension},
                            :domain_attr => {:format => :domain}, :zipcode_attr => {:format => :zipcode},
                            :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
@@ -55,6 +55,12 @@ describe "HasValidatedAttributes" do
         @resource.valid?.should be_false
         @resource.errors.full_messages.should == ["Name attr avoid non-printing characters and \\&gt;&lt;/ please."]
       end
+    end
+
+    it "should return error with more than 10 chars" do
+      @resource.name_attr = "test" * 6
+      @resource.valid?.should be_false
+      @resource.errors.full_messages.should == ["Name attr is too long (maximum is 10 characters)"]
     end
 
     it "should return ok" do
@@ -205,7 +211,7 @@ describe "HasValidatedAttributes" do
       ["-0.2", "-1"].each do |value|
         @resource.positive_dollar_attr = value 
         @resource.valid?.should be_false
-        @resource.errors.full_messages.should == ["Positive dollar attr accepts only numeric characters, period", "Positive dollar attr must be greater than 0"]
+        @resource.errors.full_messages.should == ["Positive dollar attr accepts only numeric characters, period", "Positive dollar attr must be greater than or equal to 0"]
       end
     end
 
