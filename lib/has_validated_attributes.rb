@@ -7,10 +7,12 @@ module HasValidatedAttributes
       HasValidatedAttributes.define_singleton_method "#{name}_format" do |field_name = nil, options = {}|
         validation = {}
         validation.merge!(:if => "#{field_name}?".to_sym) if format.delete(:has_if?)
-        if opts = options.delete_if{|k, v| !k.match(/length/)}
-          opts.each{|k,v| validation.merge!(:length => {k.to_s.split("_").last.to_sym => v})}
-        end
-        #validation.merge!(options) if options.present?
+        ### length options ###
+        opts = options.select{|k, v| k.match(/length/)}
+        opts.each{|k,v| validation.merge!(:length => {k.to_s.split("_").first.to_sym => v});options.delete(k)} if opts.present?
+        ### extra options ###
+        validation.merge!(options) if options.present?
+        
         format.merge(validation)
       end
     end

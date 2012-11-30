@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
-  has_validated_attributes :name_attr => {:format => :name, :length_maximum => 10}, :username_attr => {:format => :username}, :email_attr => {:format => :email},
+  has_validated_attributes :name_attr => {:format => :name, :maximum_length => 10}, :username_attr => {:format => :username}, :email_attr => {:format => :email},
                            :phone_number_attr => {:format => :phone_number}, :phone_extension_attr => {:format => :phone_extension},
                            :domain_attr => {:format => :domain}, :zipcode_attr => {:format => :zipcode},
                            :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
