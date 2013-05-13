@@ -23,7 +23,7 @@ module HasValidatedAttributes
               :username => {:length => {:within => 5..127}, :format => {:with => /\A\w[\w\.\-_@]+\z/, :message => "use only letters, numbers, and .-_@ please."}, :uniqueness => true},
               :rails_name => {:format => {:with => /^[a-zA-Z\_]*?$/u, :message => "should only include underscores and letters."}},
               :email => {:length => {:maximum => 63}, :format => {:with => /\A[\w\.%\+\-]+@(?:[A-Z0-9\-]+\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|pro|mobi|name|aero|jobs|museum)\z/i, :message => "should look like an email address."}},
-              :phone_number => {:numericality => {:greater_than_or_equal_to => 1000000000, :less_than => 10000000000, :message => 'accepts only 10 numbers and (),.- characters'}, :has_if? => true},
+              :phone_number => {:numericality => {:greater_than_or_equal_to => 1000000000, :less_than => 10000000000, :message => 'accepts only 10 numbers and (),.- characters and must not be all 0s'}, :has_if? => true},
               :phone_extension => {:numericality => {:greater_than_or_equal_to => 0, :less_than => 100000000, :message => 'accepts only numbers (0-9)'}, :has_if? => true},
               :domain => {:length => {:maximum => 63}, :format => {:with => /\A(?:[A-Z0-9\-]+\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|pro|mobi|name|aero|jobs|museum)\z/i, :message => "should look like a domain name."}},
               :zipcode => {:format => {:with => /^\d{5}(\d{4})?$/, :message => "must contain 5 or 9 numbers"}, :has_if? => true},
