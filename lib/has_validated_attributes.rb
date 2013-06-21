@@ -12,7 +12,7 @@ module HasValidatedAttributes
         opts.each{|k,v| validation.merge!(:length => {k.to_s.split("_").first.to_sym => v});options.delete(k)} if opts.present?
         ### extra options ###
         validation.merge!(options) if options.present?
-        
+
         format.merge(validation)
       end
     end
