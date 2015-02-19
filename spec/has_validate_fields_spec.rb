@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
@@ -86,8 +88,8 @@ describe "HasValidatedAttributes" do
       @resource.errors.full_messages.should == ["Email attr is too long (maximum is 63 characters)", "Email attr should look like an email address."]
     end
 
-    it "should return ok" do
-      ["abc@example.com", "Abc@example.com", "aBC@example.com", "abc.123@example.com"].each do |value|
+    ["abc@example.com", "Abc@example.com", "aBC@example.com", "abc.123@example.com", "mo’reilly@example.com", "ro'sullivan@example.com"].each do |value|
+      it "should return ok for `#{ value }`" do
         @resource.email_attr = value
         @resource.valid?.should be_true
       end
