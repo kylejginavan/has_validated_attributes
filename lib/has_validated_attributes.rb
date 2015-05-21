@@ -3,8 +3,8 @@ require "sanitize"
 
 module HasValidatedAttributes
   extend ActiveSupport::Concern
-  CONTROL_CHARS_REGEX = /\A[^[:cntrl:]\\<>]*\z/
-  CONTROL_CHARS_ERROR_MSG = "avoid non-printing characters and \\&gt;&lt;/ please."
+  NO_CONTROL_CHARS_CLASS = "^[:cntrl:]"
+  NO_CONTROL_CHARS_ERROR_MSG = "avoid non-printing characters"
 
   #instance methods
   def self.validations(*args)
@@ -25,11 +25,12 @@ module HasValidatedAttributes
 
   class SafeTextValidator < ::ActiveModel::EachValidator
     PERMITTED_UNESCAPED_CHARACTERS = {
-      "&" => "amp"
+      "&" => "amp",
+      "<" => "lt",
+      ">" => "gt",
     }
 
     def validate_each(record, attribute, value)
-      record.errors[attribute] << CONTROL_CHARS_ERROR_MSG unless value =~ CONTROL_CHARS_REGEX
       record.errors[attribute] << "may not contain HTML" unless sanitized?(value)
     end
 
@@ -51,8 +52,8 @@ module HasValidatedAttributes
   end
 
   #loading all methods dynamically
-  validations :name => { :safe_text => true, :length => {:maximum => 63}, :has_if? => true},
-              :safe_text => { :safe_text => true, :has_if? => true},
+  validations :name => { :format => { :with => /\A[#{ NO_CONTROL_CHARS_CLASS }\\<>]*\Z/, :message => NO_CONTROL_CHARS_ERROR_MSG + " and \\&gt;&lt;/ please" }, :safe_text => true, :length => {:maximum => 63}, :has_if? => true},
+              :safe_text => { :format => { :with => /\A[#{ NO_CONTROL_CHARS_CLASS }]*\Z/, :message => NO_CONTROL_CHARS_ERROR_MSG }, :safe_text => true, :has_if? => true},
               :username => {:length => {:within => 5..127}, :format => {:with => /\A\w[\w\.\-_@]+\z/, :message => "use only letters, numbers, and .-_@ please."}, :uniqueness => true},
               :rails_name => {:format => {:with => /\A[a-zA-Z\_]*?\z/u, :message => "should only include underscores and letters."}},
               :email => {:length => {:maximum => 63}, :format => {:with => /\A[\w\.%\+\-’']+@(?:[A-Z0-9\-]+\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|pro|mobi|name|aero|jobs|museum)\z/i, :message => "should look like an email address."}},

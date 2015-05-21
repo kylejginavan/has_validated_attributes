@@ -55,7 +55,7 @@ describe "HasValidatedAttributes" do
       it "should return error setting name to \"#{ value }\"" do
         @resource.name_attr = value
         expect(@resource.valid?).to be_falsey
-        expect(@resource.errors.full_messages).to include("Name attr avoid non-printing characters and \\&gt;&lt;/ please.")
+        expect(@resource.errors.full_messages).to include("Name attr avoid non-printing characters and \\&gt;&lt;/ please")
       end
     end
 
@@ -80,11 +80,18 @@ describe "HasValidatedAttributes" do
   end
 
   describe "#safe_text" do
-    [">*", "< test", "\eHey"].each do |value|
-      it "should return error setting name to \"#{ value }\"" do
+    [">*", "< test"].each do |value|
+      it "should allow value to be set to \"#{ value }\"" do
+        @resource.safe_text_attr = value
+        expect(@resource.valid?).to be_truthy
+      end
+    end
+
+    ["Hey\rWorld", "\eHey"].each do |value|
+      it "should return error setting value to \"#{ value }\"" do
         @resource.safe_text_attr = value
         expect(@resource.valid?).to be_falsey
-        expect(@resource.errors.full_messages).to include("Safe text attr avoid non-printing characters and \\&gt;&lt;/ please.")
+        expect(@resource.errors.full_messages).to include("Safe text attr avoid non-printing characters")
       end
     end
 
