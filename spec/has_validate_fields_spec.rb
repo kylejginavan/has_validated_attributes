@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 class Resource < ActiveRecord::Base
-  has_validated_attributes :name_attr => {:format => :name, :maximum_length => 10}, :username_attr => {:format => :username}, :email_attr => {:format => :email},
+  has_validated_attributes :name_attr => {:format => :name, :maximum_length => 10}, :safe_text_attr => { :format => :safe_text }, :username_attr => {:format => :username}, :email_attr => {:format => :email},
                            :phone_number_attr => {:format => :phone_number}, :phone_extension_attr => {:format => :phone_extension},
                            :domain_attr => {:format => :domain}, :zipcode_attr => {:format => :zipcode},
                            :middle_initial_attr => {:format => :middle_initial}, :dollar_attr => {:format => :dollar},
@@ -51,25 +51,47 @@ describe "HasValidatedAttributes" do
   end
 
   describe "#name" do
-    it "should return error" do
-      [">*", "< test"].each do |value|
+    [">*", "< test", "\eHey"].each do |value|
+      it "should return error setting name to \"#{ value }\"" do
         @resource.name_attr = value
-        @resource.valid?.should be_falsey
-        @resource.errors.full_messages.should == ["Name attr avoid non-printing characters and \\&gt;&lt;/ please."]
+        expect(@resource.valid?).to be_falsey
+        expect(@resource.errors.full_messages).to include("Name attr avoid non-printing characters and \\&gt;&lt;/ please.")
       end
     end
 
     it "should return error with more than 10 chars" do
       @resource.name_attr = "test" * 6
-      @resource.valid?.should be_falsey
-      @resource.errors.full_messages.should == ["Name attr is too long (maximum is 10 characters)"]
+      expect(@resource.valid?).to be_falsey
+      expect(@resource.errors.full_messages).to include("Name attr is too long (maximum is 10 characters)")
     end
 
-    it "should return ok" do
-      ["k c", "- H-", " t", "& u", "21 ", "brok", nil].each do |value|
+    ["k c", "- H-", " t", "& u", "21 ", "brok", nil].each do |value|
+      it "should return ok setting name to \"#{ value }\"" do
         @resource.name_attr = value
-        @resource.valid?.should be_truthy
+        expect(@resource.valid?).to be_truthy
       end
+    end
+
+    it "should register an error when value is not HTML sanitized" do
+      @resource.name_attr = "Little <a>Bobby</a> Tables"
+      expect(@resource.valid?).to be_falsey
+      expect(@resource.errors.full_messages).to include("Name attr may not contain HTML")
+    end
+  end
+
+  describe "#safe_text" do
+    [">*", "< test", "\eHey"].each do |value|
+      it "should return error setting name to \"#{ value }\"" do
+        @resource.safe_text_attr = value
+        expect(@resource.valid?).to be_falsey
+        expect(@resource.errors.full_messages).to include("Safe text attr avoid non-printing characters and \\&gt;&lt;/ please.")
+      end
+    end
+
+    it "should register an error when value is not HTML sanitized" do
+      @resource.safe_text_attr = "Little <a>Bobby</a> Tables"
+      expect(@resource.valid?).to be_falsey
+      expect(@resource.errors.full_messages).to include("Safe text attr may not contain HTML")
     end
   end
 

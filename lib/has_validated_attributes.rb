@@ -1,7 +1,10 @@
 # encoding: utf-8
+require "sanitize"
 
 module HasValidatedAttributes
   extend ActiveSupport::Concern
+  CONTROL_CHARS_REGEX = /\A[^[:cntrl:]\\<>]*\z/
+  CONTROL_CHARS_ERROR_MSG = "avoid non-printing characters and \\&gt;&lt;/ please."
 
   #instance methods
   def self.validations(*args)
@@ -20,8 +23,36 @@ module HasValidatedAttributes
     end
   end
 
+  class SafeTextValidator < ::ActiveModel::EachValidator
+    PERMITTED_UNESCAPED_CHARACTERS = {
+      "&" => "amp"
+    }
+
+    def validate_each(record, attribute, value)
+      record.errors[attribute] << CONTROL_CHARS_ERROR_MSG unless value =~ CONTROL_CHARS_REGEX
+      record.errors[attribute] << "may not contain HTML" unless sanitized?(value)
+    end
+
+    private
+
+    def sanitized?(text)
+      text.blank? || sanitize(text) == text
+    end
+
+    def sanitize(text)
+      ::Sanitize.fragment(text.to_s).tap do |sanitized_text|
+        # Some characters should be allowed to go unescaped, but all the decent sanitizers escape them...
+        # so we simply unescape them (this was the solution many others from the Internet have taken).
+        PERMITTED_UNESCAPED_CHARACTERS.each do |char, escape|
+          sanitized_text.gsub!("&#{ escape };", char)
+        end
+      end
+    end
+  end
+
   #loading all methods dynamically
-  validations :name => {:format => {:with => /\A[^[:cntrl:]\\<>]*\z/, :message => "avoid non-printing characters and \\&gt;&lt;/ please."}, :length => {:maximum => 63}, :has_if? => true},
+  validations :name => { :safe_text => true, :length => {:maximum => 63}, :has_if? => true},
+              :safe_text => { :safe_text => true, :has_if? => true},
               :username => {:length => {:within => 5..127}, :format => {:with => /\A\w[\w\.\-_@]+\z/, :message => "use only letters, numbers, and .-_@ please."}, :uniqueness => true},
               :rails_name => {:format => {:with => /\A[a-zA-Z\_]*?\z/u, :message => "should only include underscores and letters."}},
               :email => {:length => {:maximum => 63}, :format => {:with => /\A[\w\.%\+\-’']+@(?:[A-Z0-9\-]+\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|pro|mobi|name|aero|jobs|museum)\z/i, :message => "should look like an email address."}},
