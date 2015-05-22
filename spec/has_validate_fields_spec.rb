@@ -51,11 +51,18 @@ describe "HasValidatedAttributes" do
   end
 
   describe "#name" do
-    [">*", "< test", "\eHey"].each do |value|
+    [">*", "< test"].each do |value|
+      it "should return error setting name to \"#{ value }\"" do
+        @resource.name_attr = value
+        expect(@resource.valid?).to be_truthy
+      end
+    end
+
+    ["Hello\nWorld", "\eHey", "Oh\cFNo, it's a control char!"].each do |value|
       it "should return error setting name to \"#{ value }\"" do
         @resource.name_attr = value
         expect(@resource.valid?).to be_falsey
-        expect(@resource.errors.full_messages).to include("Name attr avoid non-printing characters and \\&gt;&lt;/ please")
+        expect(@resource.errors.full_messages).to include("Name attr avoid non-printing characters")
       end
     end
 
@@ -71,34 +78,22 @@ describe "HasValidatedAttributes" do
         expect(@resource.valid?).to be_truthy
       end
     end
-
-    it "should register an error when value is not HTML sanitized" do
-      @resource.name_attr = "Little <a>Bobby</a> Tables"
-      expect(@resource.valid?).to be_falsey
-      expect(@resource.errors.full_messages).to include("Name attr may not contain HTML")
-    end
   end
 
   describe "#safe_text" do
-    [">*", "< test"].each do |value|
-      it "should allow value to be set to \"#{ value }\"" do
+    [">*", "< test", "Hey\tWorld", "new\nline", "new\r\nline"].each do |value|
+      it "should allow value to be set to \"#{ value.gsub("\r", "\\r").gsub("\n", "\\n") }\"" do
         @resource.safe_text_attr = value
         expect(@resource.valid?).to be_truthy
       end
     end
 
-    ["Hey\rWorld", "\eHey"].each do |value|
+    ["\eHey", "Oh\cFNo, it's a control char!"].each do |value|
       it "should return error setting value to \"#{ value }\"" do
         @resource.safe_text_attr = value
         expect(@resource.valid?).to be_falsey
         expect(@resource.errors.full_messages).to include("Safe text attr avoid non-printing characters")
       end
-    end
-
-    it "should register an error when value is not HTML sanitized" do
-      @resource.safe_text_attr = "Little <a>Bobby</a> Tables"
-      expect(@resource.valid?).to be_falsey
-      expect(@resource.errors.full_messages).to include("Safe text attr may not contain HTML")
     end
   end
 
