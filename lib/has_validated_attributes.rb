@@ -2,6 +2,8 @@
 
 module HasValidatedAttributes
   extend ActiveSupport::Concern
+  NO_CONTROL_CHARS_REGEX = /\A[^[:cntrl:]]*\Z/
+  NO_CONTROL_CHARS_ERROR_MSG = "avoid non-printing characters"
 
   #instance methods
   def self.validations(*args)
@@ -20,8 +22,15 @@ module HasValidatedAttributes
     end
   end
 
+  class SafeTextValidator < ::ActiveModel::EachValidator
+    def validate_each(record, attribute, value)
+      record.errors[attribute] << NO_CONTROL_CHARS_ERROR_MSG unless NO_CONTROL_CHARS_REGEX =~ value.to_s.gsub(/[\n\r\t]/, '')
+    end
+  end
+
   #loading all methods dynamically
-  validations :name => {:format => {:with => /\A[^[:cntrl:]\\<>]*\z/, :message => "avoid non-printing characters and \\&gt;&lt;/ please."}, :length => {:maximum => 63}, :has_if? => true},
+  validations :name => { :format => { :with => NO_CONTROL_CHARS_REGEX, :message => NO_CONTROL_CHARS_ERROR_MSG }, :length => {:maximum => 63}, :has_if? => true},
+              :safe_text => { :safe_text => true, :has_if? => true},
               :username => {:length => {:within => 5..127}, :format => {:with => /\A\w[\w\.\-_@]+\z/, :message => "use only letters, numbers, and .-_@ please."}, :uniqueness => true},
               :rails_name => {:format => {:with => /\A[a-zA-Z\_]*?\z/u, :message => "should only include underscores and letters."}},
               :email => {:length => {:maximum => 63}, :format => {:with => /\A[\w\.%\+\-’']+@(?:[A-Z0-9\-]+\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|pro|mobi|name|aero|jobs|museum)\z/i, :message => "should look like an email address."}},

@@ -3,6 +3,7 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table "resources", :force => true do |t|
     t.string   "username_attr"
     t.string   "name_attr"
+    t.string   "safe_text_attr"
     t.string   "domain_attr"
     t.string   "email_attr"
     t.string   "phone_number_attr"
