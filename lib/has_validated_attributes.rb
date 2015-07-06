@@ -3,7 +3,7 @@ require 'active_record'
 
 module HasValidatedAttributes
   extend ActiveSupport::Concern
-  NO_CONTROL_CHARS_REGEX = /\A[^[:cntrl:]]*\Z/
+  NO_CONTROL_CHARS_REGEX = /\A[^[:cntrl:]]*\z/
   NO_CONTROL_CHARS_ERROR_MSG = "avoid non-printing characters"
 
   #instance methods
@@ -42,8 +42,8 @@ module HasValidatedAttributes
               :middle_initial => {:format => {:with => /\A[a-zA-Z]{0,1}\z/u, :message => "accepts only one letter"}},
               :dollar => {:format => {:with => /\A-?[0-9]{0,12}(\.[0-9]{0,2})?\z/, :message => "accepts only numeric characters, period, and negative sign"}, :numericality => {:greater_than => -1000000000000, :less_than => 1000000000000}, :allow_nil => true},
               :positive_dollar => {:format => {:with => /\A[0-9]{0,12}(\.[0-9]{0,2})?\z/, :message => "accepts only numeric characters, period"}, :numericality => {:greater_than_or_equal_to => 0, :less_than => 1000000000000}, :allow_nil => true},
-              :percent => {:format => {:with => /\A-?[0-9]{0,3}(\.[0-9]{0,3})?\z/, :message => "accepts only numeric characters, period, negative sign, and must be equal/less/greater than +/- 100"}},
-              :positive_percent => {:format => {:with => /\A[0-9]{0,3}(\.[0-9]{0,3})?\z/, :message => "accepts only numeric characters, period, and must be less than 100"}, :numericality => {:greater_than_or_equal_to => 0, :less_than_or_equal_to => 100}, :allow_nil => true},
+              :percent => {:format => {:with => /\A-?[0-9]{0,3}(\.[0-9]{0,3})?\z/, :message => "accepts only numeric characters, period, negative sign, and must be equal/less/greater than +/- 100"}, :numericality => {:greater_than_or_equal_to => -100, :less_than_or_equal_to => 100} },
+              :positive_percent => {:format => {:with => /\A[0-9]{0,3}(\.[0-9]{0,3})?\z/, :message => "accepts only numeric characters, period, and must be equal/less than 100"}, :numericality => {:greater_than_or_equal_to => 0, :less_than_or_equal_to => 100}, :allow_nil => true},
               :url => {:length => {:maximum => 255}, :format => {:with => /\A(http|https|ftp):\/\/[A-Z0-9]+([\.]{1}[a-z0-9-]{1,63})*\.[a-zA-Z]{2,5}(:[0-9]{1,5})?(\/.*)?\z/ix, :message => "web address isnt valid"}, :has_if? => true},
               :social_security_number => {:length => {:is => 9}, :numericality => {:greater_than_or_equal_to => 0, :less_than => 1000000000, :message => "must be in the format 111-11-1111"}, :has_if? => true},
               :taxid => {:length => {:is => 9}, :numericality => {:greater_than_or_equal_to => 9999999, :less_than => 1000000000, :message => "must be in the format 11-1111111"}, :has_if? => true},

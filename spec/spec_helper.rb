@@ -16,7 +16,9 @@ load(File.dirname(__FILE__) + "/db/schema.rb")
 # Load in our code
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/../lib"
 
+require 'shoulda-matchers'
 require 'has_validated_attributes'
+require 'has_validated_attributes/rspec'
 
 RSpec.configure do |config|
 
