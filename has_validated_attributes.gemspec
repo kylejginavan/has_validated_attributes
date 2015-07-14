@@ -19,8 +19,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.add_development_dependency "rspec"
   s.add_development_dependency "shoulda-matchers"
-  s.add_development_dependency("activerecord", ['>= 3.1.0'])
-  s.add_development_dependency("sqlite3")
-  s.add_development_dependency('database_cleaner')
+  s.add_development_dependency "has_normalized_attributes",  "~> 0.0", ">= 0.0.8"
+  s.add_development_dependency "activerecord",               ">= 3.1.0"
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "database_cleaner"
 end
 
