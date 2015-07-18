@@ -135,18 +135,18 @@ RSpec.shared_examples_for "phone extension attribute" do |attr|
   end
 end
 
-RSpec.shared_examples_for "url attribute" do |attr|
-  [
+RSpec.shared_examples_for "url attribute" do |attr, allowed: nil, disallowed: nil|
+  (allowed || [
     "http://www.example.com", "http://www.example.com:8001", "http://www.exmple.com/1/abc?test=test",
     "http://finane.example.com", "http://www.example.com/1/abc?test=test", "http://fiance.example.com", "http://finance.example.com.ag"
-  ].each do |url|
+  ]).each do |url|
     it { should allow_value(url).for(attr) }
   end
 
-  [
+  (disallowed || [
     "finance.example.com", "www.example.com", "www.example.com:8001", ">*", "< test",
     "www.test..com", "www.test.c", "www-test.com", "abc", "123", "&*()", "www.test-com"
-  ].each do |url|
+  ]).each do |url|
     it { should_not allow_value(url).for(attr).with_message(HasValidatedAttributes.url_format[:format][:message]) }
   end
 end
