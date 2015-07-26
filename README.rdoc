@@ -24,7 +24,7 @@ for example:
                                :positive_dollar_attr => {:format => :positive_dollar}, :percent_attr => {:format => :percent},
                                :positive_percent_attr => {:format => :positive_percent}, :url_attr => {:format => :url}, :ssn_attr => {:format => :ssn},
                                :taxid_attr => {:format => :taxid}, :age_attr => {:format => :age}, :number_attr => {:format => :number}
-  end  
+  end
 
 == Extra Options
   You can pass extra options like
@@ -36,6 +36,8 @@ for example:
   :zipcode, :dollar, :percent, :positive_percent, :middle_initial, :url,
   :positive_dollar, :domain, :ssn, :taxid, :age, :number
 
+== RSpec
+Add `require "has_validated_attributes/rspec"` to your specs to include shared examples for validated fields.
 
 == COPYRIGHT
 

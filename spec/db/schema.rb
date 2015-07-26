@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 0) do
     t.string   "url_attr"
     t.string   "age_attr"
     t.string   "number_attr"
+    t.string   "rails_name_attr"
   end
 
 end
