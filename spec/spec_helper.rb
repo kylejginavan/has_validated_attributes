@@ -1,5 +1,6 @@
 require "active_support"
 require "active_record"
+require "has_normalized_attributes"
 require "database_cleaner"
 require "yaml"
 

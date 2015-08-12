@@ -33,7 +33,7 @@ end
 #= Load shared examples
 #   it_behaves_like "name attribute", :first_name
 #   it_behaves_like "name attribute", :first_name, 10
-RSpec.shared_examples_for "name attribute" do |attr, length = HasValidatedAttributes.name_format[:maximum_length]|
+RSpec.shared_examples_for "name attribute" do |attr, length: HasValidatedAttributes.name_format[:maximum_length]|
   it { should validate_length_of(attr).is_at_least(0) }
   it { should validate_length_of(attr).is_at_most(length) }
 
@@ -111,16 +111,17 @@ RSpec.shared_examples_for "zipcode attribute" do |attr|
   end
 end
 
-RSpec.shared_examples_for "phone number attribute" do |attr|
+RSpec.shared_examples_for "phone number attribute" do |attr, normalized: false|
   ["9134456677", "5444456677", "9134466677 ", " 2134456677 "].each do |phone|
     it { should allow_value(phone).for(attr) }
   end
 
-  [ ">*", "< test", "www.test..com", "www.test.c", "www-test.com", "abc", "123", "&*()",
-   "www.test-com", "913 345 6677", "613-445-6677", "983445-6677", " 913-4256677",
-   "(888)8888888", "903-445 6627", "913-4556677", "513.445-6677", "555.555.8888"
-  ].each do |phone|
+  [">*", "< test", "www.test..com", "www.test.c", "www-test.com", "abc", "123", "&*()", "www.test-com"].each do |phone|
     it { should_not allow_value(phone).for(attr).with_message(HasValidatedAttributes.phone_number_format[:numericality][:message]) }
+  end
+
+  ["913 345 6677", "613-445-6677", "983445-6677", " 913-4256677", "(888)8888888", "903-445 6627", "913-4556677", "513.445-6677", "555.555.8888"].each do |phone|
+    it { send(normalized ? :should : :should_not, allow_value(phone).for(attr).with_message(HasValidatedAttributes.phone_number_format[:numericality][:message])) }
   end
 end
 
@@ -134,18 +135,18 @@ RSpec.shared_examples_for "phone extension attribute" do |attr|
   end
 end
 
-RSpec.shared_examples_for "url attribute" do |attr|
-  [
+RSpec.shared_examples_for "url attribute" do |attr, allowed: nil, disallowed: nil|
+  (allowed || [
     "http://www.example.com", "http://www.example.com:8001", "http://www.exmple.com/1/abc?test=test",
     "http://finane.example.com", "http://www.example.com/1/abc?test=test", "http://fiance.example.com", "http://finance.example.com.ag"
-  ].each do |url|
+  ]).each do |url|
     it { should allow_value(url).for(attr) }
   end
 
-  [
+  (disallowed || [
     "finance.example.com", "www.example.com", "www.example.com:8001", ">*", "< test",
     "www.test..com", "www.test.c", "www-test.com", "abc", "123", "&*()", "www.test-com"
-  ].each do |url|
+  ]).each do |url|
     it { should_not allow_value(url).for(attr).with_message(HasValidatedAttributes.url_format[:format][:message]) }
   end
 end
@@ -181,43 +182,50 @@ RSpec.shared_examples_for "age attribute" do |attr|
   end
 end
 
-RSpec.shared_examples_for "positive dollar attribute" do |attr|
+RSpec.shared_examples_for "positive dollar attribute" do |attr, normalized: false|
   ["0", "1", "100", "1000", "1000.99"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
-  [
-    "1,000,00", "$1,000.00", "1,000,000", "1 000 000.01",  # has_normalized_attributes may be used in concert with has_validated_attributes to cover these cases.
-    "-1", "0.2222", "ewrt"
-  ].each do |value|
+  ["-1", "0.2222", "ewrt"].each do |value|
     it { should_not allow_value(value).for(attr) }
+  end
+
+  ["1,000,00", "$1,000.00", "1,000,000", "1 000 000.01"].each do |value|
+    it { send(normalized ? :should : :should_not, allow_value(value).for(attr)) }
   end
 end
 
-RSpec.shared_examples_for "dollar attribute" do |attr|
+RSpec.shared_examples_for "dollar attribute" do |attr, normalized: false|
   ["0", "1", "100", "1000", "1000.99", "-0", "-1", "-100", "-1000", "-1000.99"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
+  ["0.2222", "ewrt"].each do |value|
+    it { should_not allow_value(value).for(attr) }
+  end
+
   [
     "1,000,00", "$1,000.00", "1,000,000", "1 000 000.01",
-    "-1,000,00", "-$1,000.00", "-1,000,000", "-1 000 000.01",  # has_normalized_attributes may be used in concert with has_validated_attributes to cover these cases.
-    "0.2222", "ewrt"
+    "-1,000,00", "-$1,000.00", "-1,000,000", "-1 000 000.01"  # has_normalized_attributes may be used in concert with has_validated_attributes to cover these cases.
   ].each do |value|
-    it { should_not allow_value(value).for(attr) }
+    it { send(normalized ? :should : :should_not, allow_value(value).for(attr)) }
   end
 end
 
-RSpec.shared_examples_for "number attribute" do |attr, length|
+RSpec.shared_examples_for "number attribute" do |attr, length: nil, normalized: false|
   ["0", "1", "100", "1000", "-1"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
+  ["werq"].each do |value|
+    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.number_format[:numericality][:message]) }
+  end
+
   [
     "1,000,00", "1,000.00", "1,000,000", "1 000 000",  # has_normalized_attributes may be used in concert with has_validated_attributes to cover these cases.
-    "werq"
   ].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.number_format[:numericality][:message]) }
+    it { send(normalized ? :should : :should_not, allow_value(value).for(attr).with_message(HasValidatedAttributes.number_format[:numericality][:message])) }
   end
 end
 
@@ -231,34 +239,36 @@ RSpec.shared_examples_for "rails name attribute" do |attr|
   end
 end
 
-RSpec.shared_examples_for "taxid attribute" do |attr|
+RSpec.shared_examples_for "taxid attribute" do |attr, normalized: false|
   ["010000000", " ", "545998888"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
-  [
-    "51-5998888", "51 5998858", "44.5559999",
-    "ab-cdefgh", "001000000", "abc", "<", "&"
-  ].each do |value|
+  ["ab-cdefgh", "001000000", "abc", "<", "&"].each do |value|
     it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.taxid_format[:numericality][:message]) }
   end
 
-  it { should_not allow_value(" 514998888 ").for(attr).with_message(/is the wrong length \(should be 9 characters\)/) }
+  ["51-5998888", "51 5998858", "44.5559999",].each do |value|
+    it { send(normalized ? :should : :should_not, allow_value(value).for(attr).with_message(HasValidatedAttributes.taxid_format[:numericality][:message])) }
+  end
+
+  it { send(normalized ? :should : :should_not, allow_value(" 514998888 ").for(attr).with_message(/is the wrong length \(should be 9 characters\)/)) }
 end
 
-RSpec.shared_examples_for "ssn attribute" do |attr|
+RSpec.shared_examples_for "ssn attribute" do |attr, normalized: false|
   ["515998488", " "].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
-  [
-    "515-99-8888", "544.99 8888", "515 99 8858", "444.33.6666",
-    "ab-444fgh", "abc", "56599858>", "33445<", "3456356&", "/23452"
-  ].each do |value|
+  ["ab-444fgh", "abc", "56599858>", "33445<", "3456356&", "/23452"].each do |value|
     it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.social_security_number_format[:numericality][:message]) }
   end
 
-  it { should_not allow_value(" 514998888 ").for(attr).with_message(/is the wrong length \(should be 9 characters\)/)}
+  ["515-99-8888", "544.99 8888", "515 99 8858", "444.33.6666"].each do |value|
+    it { send(normalized ? :should : :should_not, allow_value(value).for(attr).with_message(HasValidatedAttributes.social_security_number_format[:numericality][:message])) }
+  end
+
+  it { send(normalized ? :should : :should_not, allow_value(" 514998888 ").for(attr).with_message(/is the wrong length \(should be 9 characters\)/)) }
 end
 
 RSpec.shared_examples_for "safe text attribute" do |attr|
