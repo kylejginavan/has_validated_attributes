@@ -12,3 +12,5 @@ bin/*
 .rbenv-version
 .rbenv-gemsets
 Gemfile.lock
+.ruby-gemset
+.ruby-version
