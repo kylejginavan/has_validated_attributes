@@ -31,4 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "activerecord",               ">= 3.1.0"
   s.add_development_dependency "sqlite3",                    ">= 1.3.10"
   s.add_development_dependency "database_cleaner"
+  s.add_development_dependency "byebug"
 end
