@@ -1,6 +1,7 @@
 # encoding: utf-8
 
-require 'spec_helper'
+require "spec_helper"
+require "byebug"
 
 class Resource < ActiveRecord::Base
   has_validated_attributes :name_attr => {:format => :name, :maximum_length => 10},
@@ -67,6 +68,42 @@ describe "HasValidatedAttributes" do
       has_validated_ssn_attribute(:ssn_attr)
       has_validated_safe_text_attribute(:safe_text_attr)
       has_validated_domain_attribute(:domain_attr)
+
+      context "test validations" do
+        subject { Resource.new }
+        it { expect(subject).to be_valid }
+
+        context "email addresses" do
+          it { subject.email_attr = "name@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "gladyce@senger.io"; expect(subject).to be_valid }
+          it { subject.email_attr = "herp@derp"; expect(subject).to be_invalid }
+
+          ## all of the examples below come from
+          ##   http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx/
+          it { subject.email_attr = "NotAnEmail"; expect(subject).to be_invalid }
+          it { subject.email_attr = "@NotAnEmail"; expect(subject).to be_invalid }
+          # it { subject.email_attr = """test\\blah""@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = """test\blah""@example.com"; expect(subject).to be_invalid }
+          it { subject.email_attr = "\"test\\\rblah\"@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "\"test\rblah\"@example.com"; expect(subject).to be_invalid }
+          # it { subject.email_attr = """test\""blah""@example.com"; expect(subject).to be_valid }, true
+          # it { subject.email_attr = """test""blah""@example.com"; expect(subject).to be_invalid }
+          it { subject.email_attr = "customer/department@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "$A12345@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "!def!xyz%abc@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "_Yosemite.Sam@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "~@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = ".wooly@example.com"; expect(subject).to be_invalid }
+          it { subject.email_attr = "wo..oly@example.com"; expect(subject).to be_invalid }
+          it { subject.email_attr = "pootietang.@example.com"; expect(subject).to be_invalid }
+          it { subject.email_attr = ".@example.com"; expect(subject).to be_invalid }
+          # it { subject.email_attr = """Austin@Powers""@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "Ima.Fool@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = """Ima.Fool""@example.com"; expect(subject).to be_valid }
+          # it { subject.email_attr = """Ima Fool""@example.com"; expect(subject).to be_valid }
+          it { subject.email_attr = "Ima Fool@example.com"; expect(subject).to be_invalid }
+        end
+      end
     end
   end
 
