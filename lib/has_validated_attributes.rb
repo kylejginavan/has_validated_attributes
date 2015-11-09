@@ -38,7 +38,7 @@ module HasValidatedAttributes
               ##   http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx/
               :email => {:length => {:maximum => 63}, :format => {:with => /\A(?!\.)("([^"\r\\]|\\["\r\\])*"|([-a-z0-9!#$%&'’*+\/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]\z/i, :message => "should look like an email address."}, :has_if? => true},
               :phone_number => {:numericality => {:greater_than_or_equal_to => 1000000000, :less_than => 10000000000, :message => 'accepts only 10 numbers and (),.- characters and must not be all 0s'}, :has_if? => true},
-              :phone_extension => {:numericality => {:greater_than_or_equal_to => 0, :less_than => 100000000, :message => 'accepts only numbers (0-9)'}, :has_if? => true},
+              :phone_extension => {:length => {:maximum => 7}, :format => {:with => /\A\d+([\dxX]*\d)?\z/, :message => 'accepts only numbers (0-9) and "x"'}, :has_if? => true},
               :domain => {:length => {:maximum => 63}, :format => {:with => /\A(?:[A-Z0-9\-]+\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|pro|mobi|name|aero|jobs|museum)\z/i, :message => "should look like a domain name."}, :has_if? => true},
               :zipcode => {:format => {:with => /\A\d{5}(\d{4})?\z/, :message => "must contain 5 or 9 numbers"}, :has_if? => true},
               :middle_initial => {:format => {:with => /\A[a-zA-Z]{0,1}\z/u, :message => "accepts only one letter"}},

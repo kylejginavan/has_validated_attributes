@@ -126,12 +126,16 @@ RSpec.shared_examples_for "phone number attribute" do |attr, normalized: false|
 end
 
 RSpec.shared_examples_for "phone extension attribute" do |attr|
-  ["123", "123456"].each do |ext|
-    it { should allow_value(ext).for(attr) }
+  ["123", "123456", "123x4", "1x2x3"].each do |ext|
+    it "should allow '#{ ext }' for #{ attr }" do
+      should allow_value(ext).for(attr)
+    end
   end
 
-  ["-1", "qwert"].each do |ext|
-    it { should_not allow_value(ext).for(attr).with_message(HasValidatedAttributes.phone_extension_format[:numericality][:message]) }
+  ["-1", "qwert", "x123", "123x", "X123", "123X"].each do |ext|
+    it "should not allow '#{ ext }' for #{ attr }" do
+      should_not allow_value(ext).for(attr).with_message(HasValidatedAttributes.phone_extension_format[:format][:message])
+    end
   end
 end
 
