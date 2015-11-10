@@ -152,21 +152,21 @@ RSpec.shared_examples_for "url attribute" do |attr, allowed: nil, disallowed: ni
 end
 
 RSpec.shared_examples_for "positive percent attribute" do |attr|
-  ["100", "99", "1", "44", "99.999", "0.001"].each do |percent|
+  ["100", "99", "1", "44", "99.999", "99.9999", "0.001"].each do |percent|
     it { should allow_value(percent).for(attr) }
   end
 
-  ["100.001", "0.2222", "abc", "&", "-44", "-44.4", "-44.4444"].each do |percent|
+  ["100.001", "0.22222", "abc", "&", "-44", "-44.4", "-44.4444"].each do |percent|
     it { should_not allow_value(percent).for(attr) }
   end
 end
 
 RSpec.shared_examples_for "percent attribute" do |attr|
-  ["100", "99", "1", "44", "99.999", "0.001", "-100", "-99", "-1", "-44", "-99.999", "-0.001"].each do |value|
+  ["100", "99", "1", "44", "99.999", "99.9999", "0.001", "-100", "-99", "-1", "-44", "-99.999", "-0.001"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
-  ["100.001", "0.2222", "-100.001", "-0.2222", "abc", "&"].each do |value|
+  ["100.001", "0.22222", "-100.001", "-0.2222", "abc", "&"].each do |value|
     it { should_not allow_value(value).for(attr) }
   end
 end
