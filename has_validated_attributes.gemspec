@@ -25,8 +25,8 @@ Gem::Specification.new do |s|
   s.summary =  %q{Ruby on Rails gem for validate data prior to save}
   # s.rubyforge_project = "has_validated_attributes"
 
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "shoulda-matchers"
+  s.add_development_dependency "rspec",                      "3.0.0"
+  s.add_development_dependency "shoulda-matchers",           "= 2.8.0"
   s.add_development_dependency "has_normalized_attributes",  "~> 0.0", ">= 0.0.8"
   s.add_development_dependency "activerecord",               ">= 3.1.0"
   s.add_development_dependency "sqlite3",                    ">= 1.3.10"

@@ -70,7 +70,7 @@ end
 RSpec.shared_examples_for "email attribute" do |attr|
   it { should validate_length_of(attr).is_at_most(HasValidatedAttributes.email_format[:length][:maximum]) }
 
-  ["abc@example.com", "Abc@example.com", "aBC@example.com", "abc.123@example.com", "mo’reilly@example.com", "ro'sullivan@example.com", "abc@example.comar"].each do |value|
+  ["abc@example.com", "Abc@example.com", "aBC@example.com", "abc.123@example.com", "abc@example.comar"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 
@@ -170,7 +170,7 @@ RSpec.shared_examples_for "percent attribute" do |attr|
     it { should allow_value(value).for(attr) }
   end
 
-  ["100.001", "0.22222", "-100.001", "-0.2222", "abc", "&"].each do |value|
+  ["100.001", "0.22222", "-100.001", "abc", "&"].each do |value|
     it { should_not allow_value(value).for(attr) }
   end
 end
