@@ -170,7 +170,7 @@ RSpec.shared_examples_for "percent attribute" do |attr|
     it { should allow_value(value).for(attr) }
   end
 
-  ["100.001", "0.22222", "-100.001", "-0.2222", "abc", "&"].each do |value|
+  ["100.001", "0.22222", "-100.001", "abc", "&"].each do |value|
     it { should_not allow_value(value).for(attr) }
   end
 end

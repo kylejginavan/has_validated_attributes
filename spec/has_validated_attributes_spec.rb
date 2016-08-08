@@ -102,6 +102,7 @@ describe "HasValidatedAttributes" do
           it { subject.email_attr = """Ima.Fool""@example.com"; expect(subject).to be_valid }
           # it { subject.email_attr = """Ima Fool""@example.com"; expect(subject).to be_valid }
           it { subject.email_attr = "Ima Fool@example.com"; expect(subject).to be_invalid }
+          it { subject.email_attr = "test@q.com"; expect(subject).to be_valid }
         end
       end
     end
