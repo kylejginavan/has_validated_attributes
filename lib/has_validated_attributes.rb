@@ -39,7 +39,7 @@ module HasValidatedAttributes
               :email => {:length => {:maximum => 63}, :format => {:with => /\A(?!\.)("([^"\r\\]|\\["\r\\])*"|([-a-z0-9!#$%&'’*+\/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)@[a-z0-9][\w\.-]*[a-z0-9]*\.[a-z][a-z\.]*[a-z]\z/i, :message => "should look like an email address."}, :has_if? => true},
               :phone_number => {:numericality => {:greater_than_or_equal_to => 1000000000, :less_than => 10000000000, :message => 'accepts only 10 numbers and (),.- characters and must not be all 0s'}, :has_if? => true},
               :phone_extension => {:length => {:maximum => 7}, :format => {:with => /\A\d+([\dxX]*\d)?\z/, :message => 'accepts only numbers (0-9) and "x"'}, :has_if? => true},
-              :domain => {:length => {:maximum => 63}, :format => {:with => /[a-z0-9-]+\.[a-z0-9-\/\.]+/, :message => "should look like a domain name."}, :has_if? => true},
+              :domain => {:length => {:maximum => 63}, :format => {:with => /[a-z0-9-]+\.[a-z0-9\-\/\.]+/, :message => "should look like a domain name."}, :has_if? => true},
               :zipcode => {:format => {:with => /\A\d{5}(\d{4})?\z/, :message => "must contain 5 or 9 numbers"}, :has_if? => true},
               :middle_initial => {:format => {:with => /\A[a-zA-Z]{0,1}\z/u, :message => "accepts only one letter"}},
               :dollar => {:format => {:with => /\A-?[0-9]{0,12}(\.[0-9]{0,2})?\z/, :message => "accepts only numeric characters, period, and negative sign"}, :numericality => {:greater_than => -1000000000000, :less_than => 1000000000000}, :allow_nil => true},
