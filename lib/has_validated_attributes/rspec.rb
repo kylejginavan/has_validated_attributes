@@ -148,7 +148,7 @@ RSpec.shared_examples_for "url attribute" do |attr, allowed: nil, disallowed: ni
   end
 
   (disallowed || [
-    "finance.example.com", "www.example.com", "www.example.com:8001", ">*", "< test",
+    "finance.example.com", "www.example.com", ">*", "< test",
     "www.test..com", "www.test.c", "www-test.com", "abc", "123", "&*()", "www.test-com"
   ]).each do |url|
     it { should_not allow_value(url).for(attr).with_message(HasValidatedAttributes.url_format[:format][:message]) }
