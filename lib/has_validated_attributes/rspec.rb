@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 begin
-  require 'rspec'
-  require 'shoulda-matchers'
+  require "rspec"
+  require "shoulda-matchers"
 rescue LoadError => e
   raise <<-ERROR_MSG
 #{ e.path } is not loaded but is required when loading "has_validated_attributes/rspec"!
@@ -12,7 +14,7 @@ end
 RSpec.configure do |config|
   config.extend Module.new {
     def has_validated_attribute(type, attr, *args, &block)
-      it_behaves_like "#{ type.gsub('_', ' ') } attribute", attr, *args, &block
+      it_behaves_like "#{ type.gsub("_", " ") } attribute", attr, *args, &block
     end
 
     # Provide dynamic methods wrappers to shared behaviors.
@@ -106,7 +108,7 @@ RSpec.shared_examples_for "zipcode attribute" do |attr|
     it { should allow_value(zip).for(attr) }
   end
 
-  ["5555", "5555555555","-99999"].each do |zip|
+  ["5555", "5555555555", "-99999"].each do |zip|
     it { should_not allow_value(zip).for(attr).with_message(HasValidatedAttributes.zipcode_format[:format][:message]) }
   end
 end
