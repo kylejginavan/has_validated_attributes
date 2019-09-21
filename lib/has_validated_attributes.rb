@@ -12,13 +12,22 @@ module HasValidatedAttributes
   # instance methods
   def self.validations(*args)
     args.first.each do |name, format|
+      # show attribute name to error message
+      if (message = format.dig(:format, :message)).present?
+        format[:format][:message] = -> (_, data) { "#{message} for #{data[:attribute]}" }
+      end
+
       HasValidatedAttributes.define_singleton_method "#{name}_format" do |field_name = nil, options = {}|
         validation = {}
-        validation.merge!(if: "#{field_name}?".to_sym) if format.delete(:has_if?)
-        ### length options ###
-        opts = options.select { |k, _v| k.match(/length/) }
-        opts.each { |k, v| validation.merge!(length: { k.to_s.split("_").first.to_sym => v }); options.delete(k) } if opts.present?
-        ### extra options ###
+        validation[:if] = "#{field_name}?".to_sym if format.delete(:has_if?)
+        # length options
+        if (opts = options.select { |k, _v| k.match(/length/) }).present?
+          opts.each do |k, v|
+            validation[:length] = { k.to_s.split("_").first.to_sym => v }
+            options.delete(k)
+          end
+        end
+        # extra options
         validation.merge!(options) if options.present?
 
         format.merge(validation)
@@ -28,21 +37,21 @@ module HasValidatedAttributes
 
   class SafeTextValidator < ::ActiveModel::EachValidator
     def validate_each(record, attribute, value)
-      record.errors[attribute] << NO_CONTROL_CHARS_ERROR_MSG unless NO_CONTROL_CHARS_REGEX =~ value.to_s.gsub(/[\n\r\t]/, "")
+      record.errors[attribute] << "#{NO_CONTROL_CHARS_ERROR_MSG} for #{attribute}" unless NO_CONTROL_CHARS_REGEX =~ value.to_s.gsub(/[\n\r\t]/, "")
     end
   end
 
   # loading all methods dynamically
   validations name: { format: { with: NO_CONTROL_CHARS_REGEX, message: NO_CONTROL_CHARS_ERROR_MSG }, length: { maximum: 63 }, has_if?: true },
               safe_text: { safe_text: true, has_if?: true },
-              username: { length: { within: 5..127 }, format: { with: /\A\w[\w\.\-_@]+\z/, message: "use only letters, numbers, and .-_@ please." }, uniqueness: true, has_if?: true },
-              rails_name: { format: { with: /\A[a-zA-Z\_]*?\z/u, message: "should only include underscores and letters." } },
+              username: { length: { within: 5..127 }, format: { with: /\A\w[\w\.\-_@]+\z/, message: "use only letters, numbers, and .-_@ please" }, uniqueness: true, has_if?: true },
+              rails_name: { format: { with: /\A[a-zA-Z\_]*?\z/u, message: "should only include underscores and letters" } },
               ## the regex for emails comes from
               ##   http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx/
-              email: { length: { maximum: 63 }, format: { with: /\A(?!\.)("([^"\r\\]|\\["\r\\])*"|([-a-z0-9!#$%&'’*+\/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)@[a-z0-9][\w\.-]*[a-z0-9]*\.[a-z][a-z\.]*[a-z]\z/i, message: "should look like an email address." }, has_if?: true },
+              email: { length: { maximum: 63 }, format: { with: /\A(?!\.)("([^"\r\\]|\\["\r\\])*"|([-a-z0-9!#$%&'’*+\/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)@[a-z0-9][\w\.-]*[a-z0-9]*\.[a-z][a-z\.]*[a-z]\z/i, message: "should look like an email address" }, has_if?: true },
               phone_number: { numericality: { greater_than_or_equal_to: 1000000000, less_than: 10000000000, message: "accepts only 10 numbers and (),.- characters and must not be all 0s" }, has_if?: true },
               phone_extension: { length: { maximum: 7 }, format: { with: /\A\d+([\dxX]*\d)?\z/, message: 'accepts only numbers (0-9) and "x"' }, has_if?: true },
-              domain: { length: { maximum: 63 }, format: { with: /[a-z0-9-]+\.[a-z0-9\-\/\.]+/, message: "should look like a domain name." }, has_if?: true },
+              domain: { length: { maximum: 63 }, format: { with: /[a-z0-9-]+\.[a-z0-9\-\/\.]+/, message: "should look like a domain name" }, has_if?: true },
               zipcode: { format: { with: /\A\d{5}(\d{4})?\z/, message: "must contain 5 or 9 numbers" }, has_if?: true },
               middle_initial: { format: { with: /\A[a-zA-Z]{0,1}\z/u, message: "accepts only one letter" } },
               dollar: { format: { with: /\A-?[0-9]{0,12}(\.[0-9]{0,2})?\z/, message: "accepts only numeric characters, period, and negative sign" }, numericality: { greater_than: -1000000000000, less_than: 1000000000000 }, allow_nil: true },
