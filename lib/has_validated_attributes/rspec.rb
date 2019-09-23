@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 begin
-  require 'rspec'
-  require 'shoulda-matchers'
+  require "rspec"
+  require "shoulda-matchers"
 rescue LoadError => e
   raise <<-ERROR_MSG
 #{ e.path } is not loaded but is required when loading "has_validated_attributes/rspec"!
@@ -12,7 +14,7 @@ end
 RSpec.configure do |config|
   config.extend Module.new {
     def has_validated_attribute(type, attr, *args, &block)
-      it_behaves_like "#{ type.gsub('_', ' ') } attribute", attr, *args, &block
+      it_behaves_like "#{ type.gsub("_", " ") } attribute", attr, *args, &block
     end
 
     # Provide dynamic methods wrappers to shared behaviors.
@@ -50,7 +52,7 @@ RSpec.shared_examples_for "name attribute" do |attr, length: HasValidatedAttribu
   ["\e1B", "\cF", "Hello\nWorld", "\eHey", "Oh\cFNo, it's a control char!"].
     select { |str| str.length <= length }.
     each do |str|
-      it { should_not allow_value(str).for(attr).with_message(HasValidatedAttributes.name_format[:format][:message]) }
+      it { should_not allow_value(str).for(attr).with_message(HasValidatedAttributes.name_format[:format][:message].call(nil, attribute: "Name attr")) }
     end
 end
 
@@ -63,7 +65,7 @@ RSpec.shared_examples_for "username attribute" do |attr|
   end
 
   [">*,.<><", "<<< test", "Kansas City", "-- Hey --", "& youuuu", "21 Jump"].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.username_format[:format][:message]) }
+    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.username_format[:format][:message].call(nil, attribute: "Username attr")) }
   end
 end
 
@@ -75,7 +77,7 @@ RSpec.shared_examples_for "email attribute" do |attr|
   end
 
   ["Abc.example.com", "A@b@c@example.com", "()[]\;:,<>@example.com"].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.email_format[:format][:message]) }
+    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.email_format[:format][:message].call(nil, attribute: "Email attr")) }
   end
 end
 
@@ -87,7 +89,7 @@ RSpec.shared_examples_for "domain attribute" do |attr|
   end
 
   [">*", "<test", "test-er"].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.domain_format[:format][:message]) }
+    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.domain_format[:format][:message].call(nil, attribute: "Domain attr")) }
   end
 end
 
@@ -97,7 +99,7 @@ RSpec.shared_examples_for "middle initial attribute" do |attr|
   end
 
   ["k c", "55555", "55555-5555", "55555 5555", "55555.5555", "(888)88-9999", " ,-99999"].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.middle_initial_format[:format][:message]) }
+    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.middle_initial_format[:format][:message].call(nil, attribute: "Middle initial attr")) }
   end
 end
 
@@ -106,8 +108,8 @@ RSpec.shared_examples_for "zipcode attribute" do |attr|
     it { should allow_value(zip).for(attr) }
   end
 
-  ["5555", "5555555555","-99999"].each do |zip|
-    it { should_not allow_value(zip).for(attr).with_message(HasValidatedAttributes.zipcode_format[:format][:message]) }
+  ["5555", "5555555555", "-99999"].each do |zip|
+    it { should_not allow_value(zip).for(attr).with_message(HasValidatedAttributes.zipcode_format[:format][:message].call(nil, attribute: "Zipcode attr")) }
   end
 end
 
@@ -134,7 +136,7 @@ RSpec.shared_examples_for "phone extension attribute" do |attr|
 
   ["-1", "qwert", "x123", "123x", "X123", "123X"].each do |ext|
     it "should not allow '#{ ext }' for #{ attr }" do
-      should_not allow_value(ext).for(attr).with_message(HasValidatedAttributes.phone_extension_format[:format][:message])
+      should_not allow_value(ext).for(attr).with_message(HasValidatedAttributes.phone_extension_format[:format][:message].call(nil, attribute: "Phone extension attr"))
     end
   end
 end
@@ -151,7 +153,7 @@ RSpec.shared_examples_for "url attribute" do |attr, allowed: nil, disallowed: ni
     "finance.example.com", "www.example.com", ">*", "< test",
     "www.test..com", "www.test.c", "www-test.com", "abc", "123", "&*()", "www.test-com"
   ]).each do |url|
-    it { should_not allow_value(url).for(attr).with_message(HasValidatedAttributes.url_format[:format][:message]) }
+    it { should_not allow_value(url).for(attr).with_message(HasValidatedAttributes.url_format[:format][:message].call(nil, attribute: "Url attr")) }
   end
 end
 
@@ -239,7 +241,7 @@ RSpec.shared_examples_for "rails name attribute" do |attr|
   end
 
   [">*", "< test", "test-er", "yo dude"].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.rails_name_format[:format][:message]) }
+    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes.rails_name_format[:format][:message].call(nil, attribute: "Rails name attr")) }
   end
 end
 
@@ -281,6 +283,6 @@ RSpec.shared_examples_for "safe text attribute" do |attr|
   end
 
   ["\eHey", "Oh\cFNo, it's a control char!"].each do |value|
-    it { should_not allow_value(value).for(attr).with_message(HasValidatedAttributes::NO_CONTROL_CHARS_ERROR_MSG) }
+    it { should_not allow_value(value).for(attr).with_message(/#{HasValidatedAttributes::NO_CONTROL_CHARS_ERROR_MSG}/) }
   end
 end

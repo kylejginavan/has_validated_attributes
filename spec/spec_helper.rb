@@ -17,11 +17,17 @@ load(File.dirname(__FILE__) + "/db/schema.rb")
 # Load in our code
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/../lib"
 
-require "shoulda-matchers"
+require "shoulda/matchers"
 require "has_validated_attributes"
 require "has_validated_attributes/rspec"
 
 RSpec.configure do |config|
+  config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
+
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
