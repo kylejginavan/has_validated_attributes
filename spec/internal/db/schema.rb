@@ -1,5 +1,8 @@
-ActiveRecord::Schema.define(:version => 0) do
+# frozen_string_literal: true
 
+ActiveRecord::Schema.define do
+  # Set up any tables you need to exist for your test suite that don't belong
+  # in migrations.
   create_table "resources", :force => true do |t|
     t.string   "username_attr"
     t.string   "name_attr"
@@ -21,5 +24,4 @@ ActiveRecord::Schema.define(:version => 0) do
     t.string   "number_attr"
     t.string   "rails_name_attr"
   end
-
 end

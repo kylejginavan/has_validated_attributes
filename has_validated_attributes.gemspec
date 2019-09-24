@@ -25,12 +25,16 @@ Gem::Specification.new do |s|
   s.summary =  %q{Ruby on Rails gem for validate data prior to save}
   # s.rubyforge_project = "has_validated_attributes"
 
-  s.add_development_dependency "activerecord",               "~> 6.0"
-  s.add_development_dependency "byebug"
-  s.add_development_dependency "database_cleaner"
+  s.add_development_dependency "byebug",                     "~> 11.0"
+  s.add_development_dependency "combustion",                 "~> 1.1"
+  s.add_development_dependency "database_cleaner",           "~> 1.7"
   s.add_development_dependency "has_normalized_attributes",  "~> 0.0", ">= 0.0.8"
+  s.add_development_dependency "pg",                         "~> 1.1"
+  s.add_development_dependency "rails",                      "~> 6.0"
   s.add_development_dependency "rspec",                      "~> 3.8"
+  s.add_development_dependency "rspec-rails",                ">= 4.0.0beta2", "< 5.0"
   s.add_development_dependency "rspec_junit_formatter",      "~> 0.4"
+  s.add_development_dependency "rubocop",                    "~> 0.74"         # code quality check for sonarqube
   s.add_development_dependency "shoulda-matchers",           "~> 4.1"
-  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "simplecov",                  "~> 0.17"
 end
