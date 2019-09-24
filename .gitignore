@@ -6,6 +6,7 @@ pkg/*
 log/*.log
 *.tmproj
 tmp
+tmp/**/*
 log
 .gitconfig
 bin/*
@@ -14,4 +15,6 @@ bin/*
 Gemfile.lock
 .ruby-gemset
 .ruby-version
-spec/db/test.sqlite3
+spec/internal/config/database.yml
+spec/internal/log/*.log
+.byebug_history

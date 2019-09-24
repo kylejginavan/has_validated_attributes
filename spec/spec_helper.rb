@@ -1,45 +1,24 @@
-require "active_support"
-require "active_record"
-require "has_normalized_attributes"
-require "database_cleaner"
-require "yaml"
-
-ENV["debug"] = "test" unless ENV["debug"]
-
-# Establish DB Connection
-config = YAML::load(IO.read(File.join(File.dirname(__FILE__), "db", "database.yml")))
-ActiveRecord::Base.configurations = {"test" => config[ENV["DB"] || "sqlite3"]}
-ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations["test"])
-
-# Load Test Schema into the Database
-load(File.dirname(__FILE__) + "/db/schema.rb")
-
-# Load in our code
-$LOAD_PATH.unshift "#{File.dirname(__FILE__)}/../lib"
-
-require "shoulda/matchers"
-require "has_validated_attributes"
-require "has_validated_attributes/rspec"
+# frozen_string_literal: true
 
 RSpec.configure do |config|
-  config.include(Shoulda::Matchers::ActiveModel, type: :model)
-  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
-
-  config.expect_with :rspec do |c|
-    c.syntax = [:should, :expect]
+  config.expect_with :rspec do |expectations|
+    # This option will default to `true` in RSpec 4. It makes the `description`
+    # and `failure_message` of custom matchers include text for helper methods
+    # defined using `chain`, e.g.:
+    # be_bigger_than(2).and_smaller_than(4).description
+    #   # => "be bigger than 2 and smaller than 4"
+    # ...rather than:
+    #   # => "be bigger than 2"
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
+  # rspec-mocks config goes here. You can use an alternate test double
+  # library (such as bogus or mocha) by changing the `mock_with` option here.
+  config.mock_with :rspec do |mocks|
+    # Prevents you from mocking or stubbing a method that does not exist on
+    # a real object. This is generally recommended, and will default to
+    # `true` in RSpec 4.
+    mocks.verify_partial_doubles = true
   end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
-
+  config.order = :random
 end
