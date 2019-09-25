@@ -7,7 +7,7 @@ require "database_cleaner"
 require "rails/all"
 require "rspec/rails"
 require "shoulda-matchers"
-require "rspec_examples"
+require "has_validated_attributes/rspec"
 
 if ENV["COVERAGE"]
   require "simplecov"
