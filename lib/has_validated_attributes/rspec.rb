@@ -209,8 +209,12 @@ RSpec.shared_examples_for "dollar attribute" do |attr, normalized: false|
     it { should allow_value(value).for(attr) }
   end
 
-  ["0.2222", "ewrt"].each do |value|
+  ["ewrt"].each do |value|
     it { should_not allow_value(value).for(attr) }
+  end
+
+  ["0.2222"].each do |value|
+    it { should allow_value(value).for(attr) }
   end
 
   [

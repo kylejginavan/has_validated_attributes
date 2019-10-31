@@ -54,7 +54,7 @@ module HasValidatedAttributes
               domain: { length: { maximum: 63 }, format: { with: /[a-z0-9-]+\.[a-z0-9\-\/\.]+/, message: "should look like a domain name" }, has_if?: true },
               zipcode: { format: { with: /\A\d{5}(\d{4})?\z/, message: "must contain 5 or 9 numbers" }, has_if?: true },
               middle_initial: { format: { with: /\A[a-zA-Z]{0,1}\z/u, message: "accepts only one letter" } },
-              dollar: { format: { with: /\A-?[0-9]{0,12}(\.[0-9]{0,2})?\z/, message: "accepts only numeric characters, period, and negative sign" }, numericality: { greater_than: -1000000000000, less_than: 1000000000000 }, allow_nil: true },
+              dollar: { format: { with: /\A-?[0-9]{0,12}(\.[0-9]{0,4})?\z/, message: "accepts only numeric characters, period, and negative sign" }, numericality: { greater_than: -1000000000000, less_than: 1000000000000 }, allow_nil: true },
               positive_dollar: { format: { with: /\A[0-9]{0,12}(\.[0-9]{0,2})?\z/, message: "accepts only numeric characters, period" }, numericality: { greater_than_or_equal_to: 0, less_than: 1000000000000 }, allow_nil: true },
               percent: { format: { with: /\A-?[0-9]{0,4}(\.[0-9]{0,4})?\z/, message: "accepts only numeric characters, period, negative sign, and must be equal/less/greater than +/- 100" }, numericality: { greater_than_or_equal_to: -100, less_than_or_equal_to: 100 }, has_if?: true },
               positive_percent: { format: { with: /\A[0-9]{0,4}(\.[0-9]{0,4})?\z/, message: "accepts only numeric characters, period, and must be equal/less than 100" }, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, allow_nil: true },
