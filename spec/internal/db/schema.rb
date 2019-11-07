@@ -17,6 +17,7 @@ ActiveRecord::Schema.define do
     t.string   "taxid_attr"
     t.string   "dollar_attr"
     t.string   "positive_dollar_attr"
+    t.string   "extended_dollar_attr"
     t.string   "percent_attr"
     t.string   "positive_percent_attr"
     t.string   "url_attr"

@@ -37,4 +37,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rubocop",                    "~> 0.74"         # code quality check for sonarqube
   s.add_development_dependency "shoulda-matchers",           "~> 4.1"
   s.add_development_dependency "simplecov",                  "~> 0.17"
+  s.add_development_dependency "sprockets",                  "~> 3.0"
 end
