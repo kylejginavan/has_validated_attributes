@@ -14,8 +14,7 @@ class Resource < ActiveRecord::Base
                            domain_attr: { format: :domain },
                            zipcode_attr: { format: :zipcode },
                            middle_initial_attr: { format: :middle_initial },
-                           dollar_attr: { format: :dollar },
-                           extended_dollar_attr: { format: :extended_dollar },
+                           dollar_attr: { format: :dollar, precision_length: 3 },
                            positive_dollar_attr: { format: :positive_dollar },
                            percent_attr: { format: :percent },
                            positive_percent_attr: { format: :positive_percent },
@@ -38,7 +37,6 @@ class NormalizedResource < Resource
                             zipcode_attr: :strip,
                             middle_initial_attr: :strip,
                             dollar_attr: :dollar,
-                            extended_dollar_attr: :dollar,
                             positive_dollar_attr: :dollar,
                             percent_attr: :percent,
                             positive_percent_attr: :percent,
@@ -64,7 +62,6 @@ describe "HasValidatedAttributes", type: :model do
       has_validated_percent_attribute(:percent_attr)
       has_validated_age_attribute(:age_attr)
       has_validated_positive_dollar_attribute(:positive_dollar_attr)
-      has_validated_extended_dollar_attribute(:extended_dollar_attr)
       has_validated_dollar_attribute(:dollar_attr)
       has_validated_number_attribute(:number_attr)
       has_validated_rails_name_attribute(:rails_name_attr)
@@ -116,7 +113,6 @@ describe "HasValidatedAttributes", type: :model do
     describe NormalizedResource do
       has_validated_phone_number_attribute(:phone_number_attr, normalized: true)
       has_validated_positive_dollar_attribute(:positive_dollar_attr, normalized: true)
-      has_validated_extended_dollar_attribute(:extended_dollar_attr, normalized: true)
       has_validated_dollar_attribute(:dollar_attr, normalized: true)
       has_validated_number_attribute(:number_attr, normalized: true)
       has_validated_taxid_attribute(:taxid_attr, normalized: true)
@@ -128,7 +124,7 @@ describe "HasValidatedAttributes", type: :model do
     before(:each) do
       @resource = Resource.create(username_attr: "testusername", name_attr: "testname", email_attr: "test@example.com",
         phone_number_attr: "1111111111", phone_extension_attr: "111111", domain_attr: "www.test.com", zipcode_attr: "11111",
-        middle_initial_attr: "A", dollar_attr: "-11", positive_dollar_attr: "1", percent_attr: "12", extended_dollar_attr: "12.756",
+        middle_initial_attr: "A", dollar_attr: "-11", positive_dollar_attr: "1", percent_attr: "12",
         positive_percent_attr: "99", url_attr: "http://www.google.com", ssn_attr: "111111111", taxid_attr: "111111111",
         number_attr: "1")
     end
