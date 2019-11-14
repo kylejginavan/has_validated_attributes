@@ -14,7 +14,7 @@ class Resource < ActiveRecord::Base
                            domain_attr: { format: :domain },
                            zipcode_attr: { format: :zipcode },
                            middle_initial_attr: { format: :middle_initial },
-                           dollar_attr: { format: :dollar },
+                           dollar_attr: { format: :dollar, precision_length: 3 },
                            positive_dollar_attr: { format: :positive_dollar },
                            percent_attr: { format: :percent },
                            positive_percent_attr: { format: :positive_percent },

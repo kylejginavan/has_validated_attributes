@@ -205,7 +205,7 @@ RSpec.shared_examples_for "positive dollar attribute" do |attr, normalized: fals
 end
 
 RSpec.shared_examples_for "dollar attribute" do |attr, normalized: false|
-  ["0", "1", "100", "1000", "1000.99", "-0", "-1", "-100", "-1000", "-1000.99"].each do |value|
+  ["0", "1", "100", "1000", "1000.99", "-0", "-1", "-100", "-1000", "-1000.99", "12.125", "-12.125"].each do |value|
     it { should allow_value(value).for(attr) }
   end
 

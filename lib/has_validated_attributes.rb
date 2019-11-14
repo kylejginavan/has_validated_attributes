@@ -23,10 +23,15 @@ module HasValidatedAttributes
         # length options
         if (opts = options.select { |k, _v| k.match(/length/) }).present?
           opts.each do |k, v|
-            validation[:length] = { k.to_s.split("_").first.to_sym => v }
+            if k == :precision_length
+              format[:format][:with] = Regexp.new "\\A-?[0-9]{0,12}(\.[0-9]{0,#{options[:precision_length]}})?\\z"
+            else
+              validation[:length] = { k.to_s.split("_").first.to_sym => v }
+            end
             options.delete(k)
           end
         end
+
         # extra options
         validation.merge!(options) if options.present?
 
