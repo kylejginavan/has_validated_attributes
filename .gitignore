@@ -14,7 +14,7 @@ bin/*
 .rbenv-gemsets
 Gemfile.lock
 .ruby-gemset
-.ruby-version
 spec/internal/config/database.yml
 spec/internal/log/*.log
 .byebug_history
+spec/internal/config/database.yml

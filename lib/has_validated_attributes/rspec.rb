@@ -11,7 +11,7 @@ Do you need to `gem install #{ e.path }`?
 ERROR_MSG
 end
 
-Dir[Rails.root.join("spec/support/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.extend Module.new {
@@ -221,7 +221,7 @@ RSpec.shared_examples_for "dollar attribute" do |attr, normalized: false|
   end
 end
 
-RSpec.shared_examples_for "number attribute" do |attr, length: nil, normalized: false|
+RSpec.shared_examples_for "number attribute" do |attr, normalized: false|
   ["0", "1", "100", "1000", "-1"].each do |value|
     it { should allow_value(value).for(attr) }
   end
