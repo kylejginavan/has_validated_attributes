@@ -42,7 +42,7 @@ module HasValidatedAttributes
 
   class SafeTextValidator < ::ActiveModel::EachValidator
     def validate_each(record, attribute, value)
-      record.errors[attribute] << "#{NO_CONTROL_CHARS_ERROR_MSG} for #{attribute}" unless NO_CONTROL_CHARS_REGEX =~ value.to_s.gsub(/[\n\r\t]/, "")
+      record.errors.add(attribute, "#{NO_CONTROL_CHARS_ERROR_MSG} for #{attribute}") unless NO_CONTROL_CHARS_REGEX =~ value.to_s.gsub(/[\n\r\t]/, "")
     end
   end
 
@@ -86,4 +86,4 @@ module HasValidatedAttributes
 end
 
 # include activerecord
-ActiveRecord::Base.send :include, HasValidatedAttributes
+ActiveRecord::Base.include HasValidatedAttributes
