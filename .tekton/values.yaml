@@ -1,6 +1,6 @@
 publish: false
 
-gem: &gem has_owner
+gem: &gem has_validated_attributes
 git:
   provider: github.com
   organization: OneHQ
