@@ -25,7 +25,7 @@ spec:
 
 
   pipelineRef:
-    name: gem-delivery-has-attachments
+    name: gem-delivery-has-validated-attributes
   timeout: 1h30m0s
   podTemplate:
     volumes:
